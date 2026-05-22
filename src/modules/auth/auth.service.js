@@ -84,3 +84,22 @@ export const refreshAccessToken = async (refreshToken) => {
     throw { statusCode: 401, message: 'Invalid refresh token' };
   }
 };
+
+export const changePassword = async (userId, oldPassword, newPassword) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw { statusCode: 404, message: 'User not found' };
+  }
+
+  const isMatch = await bcrypt.compare(oldPassword, user.password);
+  if (!isMatch) {
+    throw { statusCode: 400, message: 'Incorrect current password' };
+  }
+
+  user.password = newPassword;
+  user.mustChangePassword = false;
+  user.passwordChangedAt = new Date();
+  await user.save();
+
+  return user.toJSON();
+};

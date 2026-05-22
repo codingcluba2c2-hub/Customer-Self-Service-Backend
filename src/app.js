@@ -28,6 +28,8 @@ app.use(
   cors({
     origin: process.env.CORS_ORIGIN || env.CLIENT_ORIGIN,
     credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['set-cookie'],
   })
 );
 

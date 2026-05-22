@@ -1,6 +1,6 @@
 // src/modules/auth/auth.controller.js
 import { ApiResponse } from '../../utils/ApiResponse.js';
-import { registerUser, loginUser, getCurrentUser, logoutUser, refreshAccessToken } from './auth.service.js';
+import { registerUser, loginUser, getCurrentUser, logoutUser, refreshAccessToken, changePassword } from './auth.service.js';
 import env from '../../config/env.js';
 
 // Register controller
@@ -84,6 +84,17 @@ export const refreshToken = async (req, res, next) => {
     }
     const newAccess = await refreshAccessToken(tokenFromCookie);
     return res.json(ApiResponse.success('Access token refreshed', { token: newAccess }));
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Change password controller
+export const updatePassword = async (req, res, next) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    const user = await changePassword(req.user.id, oldPassword, newPassword);
+    return res.json(ApiResponse.success('Password changed successfully', user));
   } catch (err) {
     next(err);
   }

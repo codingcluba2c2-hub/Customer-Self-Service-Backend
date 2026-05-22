@@ -51,6 +51,14 @@ export const updateProfile = async (req, res, next) => {
       state,
       country,
       postalCode,
+      language,
+      companyWebsite,
+      companyIndustry,
+      companySize,
+      companyDescription,
+      linkedinUrl,
+      supportEmail,
+      businessPhone,
     } = req.body;
 
     const user = await User.findById(req.user._id);
@@ -71,7 +79,14 @@ export const updateProfile = async (req, res, next) => {
     if (state !== undefined) user.state = state;
     if (country !== undefined) user.country = country;
     if (postalCode !== undefined) user.postalCode = postalCode;
-
+    if (language !== undefined) user.language = language;
+    if (companyWebsite !== undefined) user.companyWebsite = companyWebsite;
+    if (companyIndustry !== undefined) user.companyIndustry = companyIndustry;
+    if (companySize !== undefined) user.companySize = companySize;
+    if (companyDescription !== undefined) user.companyDescription = companyDescription;
+    if (linkedinUrl !== undefined) user.linkedinUrl = linkedinUrl;
+    if (supportEmail !== undefined) user.supportEmail = supportEmail;
+    if (businessPhone !== undefined) user.businessPhone = businessPhone;
     if (req.file) {
       user.profileImage = `/uploads/${req.file.filename}`;
     } else if (req.body.profileImage !== undefined) {

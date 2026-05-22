@@ -7,7 +7,7 @@ export const validateRequest = (req, res, next) => {
   if (!errors.isEmpty()) {
     const extractedErrors = {};
     errors.array().forEach(err => {
-      extractedErrors[err.param] = err.msg;
+      extractedErrors[err.path || err.param] = err.msg;
     });
     console.log('Validation errors:', extractedErrors);
     return res.status(400).json(ApiResponse.error('Validation failed', extractedErrors));
