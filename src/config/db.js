@@ -33,7 +33,14 @@ const migrateExistingUsers = async () => {
   }
 };
 
+let isConnected = false;
+
 const connectDB = async () => {
+  if (isConnected) {
+    console.log('Using existing MongoDB connection');
+    return;
+  }
+
   console.log('Attempting MongoDB connection to:', redactMongoUri(env.MONGO_URI));
 
   if (!env.MONGO_URI) {
@@ -42,11 +49,13 @@ const connectDB = async () => {
   }
 
   try {
-    await mongoose.connect(env.MONGO_URI, {
+    const db = await mongoose.connect(env.MONGO_URI, {
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
       family: 4,
     });
+
+    isConnected = db.connections[0].readyState === 1;
 
     await migrateExistingUsers();
     console.log('MongoDB connected');
@@ -58,7 +67,8 @@ const connectDB = async () => {
     }
 
     console.error('MongoDB connection error:', error);
-    process.exit(1);
+    // process.exit(1) should not be used in serverless environments
+    throw error;
   }
 };
 
