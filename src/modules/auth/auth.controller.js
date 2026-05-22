@@ -15,6 +15,12 @@ export const register = async (req, res, next) => {
       sameSite: 'strict',
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
+    // Set accessToken in cookie for robust persistence across reloads
+    res.cookie('accessToken', accessToken, {
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
     return res.status(201).json(ApiResponse.success('Registration successful', { token: accessToken, user }));
   } catch (err) {
     next(err);
@@ -34,7 +40,12 @@ export const login = async (req, res, next) => {
       sameSite: 'strict',
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     });
-    // Also set access token cookie if desired (optional)
+    // Set accessToken in cookie for robust persistence across reloads
+    res.cookie('accessToken', accessToken, {
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
     // Return access token in body and user data
     return res.json(ApiResponse.success('Login successful', { token: accessToken, user }));
   } catch (err) {

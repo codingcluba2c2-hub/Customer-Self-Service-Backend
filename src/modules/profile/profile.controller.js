@@ -109,3 +109,16 @@ export const uploadAvatar = async (req, res, next) => {
       return res.status(400).json(ApiResponse.error('Avatar file is required'));
     }
 
+    user.profileImage = `/uploads/${req.file.filename}`;
+    await user.save();
+
+    return res.json(
+      ApiResponse.success('Profile image uploaded successfully', {
+        profileImage: user.profileImage,
+        user: user.toJSON(),
+      })
+    );
+  } catch (error) {
+    next(error);
+  }
+};
